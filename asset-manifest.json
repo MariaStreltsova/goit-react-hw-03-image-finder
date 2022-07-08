@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/MariaStreltsova/goit-react-hw-03-image-finder.git/static/css/main.7acaea2f.css",
-    "main.js": "/MariaStreltsova/goit-react-hw-03-image-finder.git/static/js/main.07d3183d.js",
-    "index.html": "/MariaStreltsova/goit-react-hw-03-image-finder.git/index.html",
-    "main.7acaea2f.css.map": "/MariaStreltsova/goit-react-hw-03-image-finder.git/static/css/main.7acaea2f.css.map",
-    "main.07d3183d.js.map": "/MariaStreltsova/goit-react-hw-03-image-finder.git/static/js/main.07d3183d.js.map"
+    "main.css": "/MariaStreltsova/goit-react-hw-03-image-finder/static/css/main.7acaea2f.css",
+    "main.js": "/MariaStreltsova/goit-react-hw-03-image-finder/static/js/main.07d3183d.js",
+    "index.html": "/MariaStreltsova/goit-react-hw-03-image-finder/index.html",
+    "main.7acaea2f.css.map": "/MariaStreltsova/goit-react-hw-03-image-finder/static/css/main.7acaea2f.css.map",
+    "main.07d3183d.js.map": "/MariaStreltsova/goit-react-hw-03-image-finder/static/js/main.07d3183d.js.map"
   },
   "entrypoints": [
     "static/css/main.7acaea2f.css",
