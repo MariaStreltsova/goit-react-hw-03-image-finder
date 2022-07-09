@@ -2,6 +2,7 @@ import { Component } from 'react';
 import axios from 'axios';
 import SearhBar from './searchBar/SearchBar';
 import ImageGallery from './image-gallery/ImageGallery';
+import { AppContainer } from './App.styled';
 
 axios.defaults.baseURL = 'https://pixabay.com/api/';
 export default class App extends Component {
@@ -50,7 +51,7 @@ export default class App extends Component {
 
   render() {
     return (
-      <div>
+      <AppContainer>
         <SearhBar onSubmit={this.handleFormSubmit} />
         <div>
           {this.state.images.length > 0 ? (
@@ -60,7 +61,7 @@ export default class App extends Component {
             />
           ) : null}
         </div>
-      </div>
+      </AppContainer>
     );
   }
 }

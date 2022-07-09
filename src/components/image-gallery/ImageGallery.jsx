@@ -1,8 +1,8 @@
 import ImageGalleryItem from 'components/image-gallery-item/ImageGalleryItem';
-
+import { ImageList } from './ImageGallery.styled';
 export default function ImageGallery({ images, selectedImg }) {
   return (
-    <ul>
+    <ImageList>
       {images.map(({ id, webformatURL, tags, largeImageURL }) => (
         <ImageGalleryItem
           key={id}
@@ -11,6 +11,6 @@ export default function ImageGallery({ images, selectedImg }) {
           selectedImg={() => selectedImg(largeImageURL, tags)}
         />
       ))}
-    </ul>
+    </ImageList>
   );
 }

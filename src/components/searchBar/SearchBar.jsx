@@ -1,4 +1,11 @@
 import { Component } from 'react';
+import {
+  SearchBar,
+  SerchForm,
+  Input,
+  SearchBtn,
+  SerchFormBtnLabel,
+} from './SerchBar.styled';
 export default class SearhBar extends Component {
   state = {
     searchQuery: '',
@@ -18,9 +25,9 @@ export default class SearhBar extends Component {
   };
   render() {
     return (
-      <header>
-        <form onSubmit={this.handleSubmit}>
-          <input
+      <SearchBar>
+        <SerchForm onSubmit={this.handleSubmit}>
+          <Input
             type="text"
             autoComplete="off"
             autoFocus
@@ -29,11 +36,11 @@ export default class SearhBar extends Component {
             value={this.state.searchQuery}
             onChange={this.handleChange}
           />
-          <button type="submit">
-            <span>Search</span>
-          </button>
-        </form>
-      </header>
+          <SearchBtn type="submit">
+            <SerchFormBtnLabel>Search</SerchFormBtnLabel>
+          </SearchBtn>
+        </SerchForm>
+      </SearchBar>
     );
   }
 }

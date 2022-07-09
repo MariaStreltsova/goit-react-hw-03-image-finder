@@ -1,7 +1,9 @@
+import { GalleryItem, Image } from './ImageGalleryItem.styled';
+
 export default function ImageGalleryItem({ tags, previewImg, selectedImg }) {
   return (
-    <li class="gallery-item">
-      <img src={previewImg} alt={tags} onClick={selectedImg} />
-    </li>
+    <GalleryItem>
+      <Image src={previewImg} alt={tags} onClick={selectedImg} />
+    </GalleryItem>
   );
 }
