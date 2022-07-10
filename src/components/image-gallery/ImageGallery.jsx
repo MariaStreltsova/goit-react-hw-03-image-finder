@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import ImageGalleryItem from 'components/image-gallery-item/ImageGalleryItem';
 import { ImageList } from './ImageGallery.styled';
-export default function ImageGallery({ images, selectedImg }) {
+export default function ImageGallery({ images, selectedImage }) {
   return (
     <ImageList>
       {images.map(({ id, webformatURL, tags, largeImageURL }) => (
@@ -9,7 +9,7 @@ export default function ImageGallery({ images, selectedImg }) {
           key={id}
           previewImg={webformatURL}
           tags={tags}
-          selectedImg={() => selectedImg(largeImageURL, tags)}
+          selectedImage={() => selectedImage(largeImageURL, tags)}
         />
       ))}
     </ImageList>

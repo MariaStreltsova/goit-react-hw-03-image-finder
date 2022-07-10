@@ -7,6 +7,7 @@ import LoadMoreButton from './button/Button';
 import { AppContainer } from './App.styled';
 import { Api } from '../components/service/ApiService';
 import Spiner from './loader/Loader';
+import Modal from './modal/Modal';
 
 axios.defaults.baseURL = 'https://pixabay.com/api/';
 export default class App extends Component {
@@ -15,7 +16,7 @@ export default class App extends Component {
     searchQuery: '',
     images: [],
     page: 1,
-    seletedImg: null,
+    selectedImage: null,
     alt: null,
     status: 'idle',
   };
@@ -61,7 +62,7 @@ export default class App extends Component {
   };
   handleSelectedImage = (largeImageUrl, tags) => {
     this.setState({
-      selectedImg: largeImageUrl,
+      selectedImage: largeImageUrl,
       alt: tags,
     });
   };
@@ -71,7 +72,7 @@ export default class App extends Component {
       searchQuery: '',
       page: 1,
       images: [],
-      selectedImg: null,
+      selectedImage: null,
       alt: null,
       status: 'idle',
     });
@@ -83,8 +84,14 @@ export default class App extends Component {
     }));
   };
 
+  closeModal = () => {
+    this.setState({
+      selectedImage: null,
+    });
+  };
+
   render() {
-    const { images, status } = this.state;
+    const { images, status, selectedImage, alt } = this.state;
     if (status === 'idle') {
       return <SearhBar onSubmit={this.handleFormSubmit} />;
     }
@@ -106,13 +113,13 @@ export default class App extends Component {
             images={this.state.images}
             selectedImage={this.handleSelectedImage}
           />
-          {/* {selectedImg && (
+          {selectedImage && (
             <Modal
-              selectedImg={selectedImg}
+              selectedImage={selectedImage}
               tags={alt}
               onClose={this.closeModal}
             />
-          )} */}
+          )}
           {images.length > 0 && <LoadMoreButton onClick={this.loadMore} />}
         </AppContainer>
       );
