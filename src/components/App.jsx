@@ -2,6 +2,7 @@ import { Component } from 'react';
 import axios from 'axios';
 import SearhBar from './searchBar/SearchBar';
 import ImageGallery from './image-gallery/ImageGallery';
+import LoadMoreButton from './button/Button';
 import { AppContainer } from './App.styled';
 
 axios.defaults.baseURL = 'https://pixabay.com/api/';
@@ -19,9 +20,11 @@ export default class App extends Component {
     const response = await axios.get(
       `?q=${this.state.searchQuery}&page=${this.state.page}&key=27511871-af3c65d931511896211490940&image_type=photo&orientation=horizontal&per_page=12`
     );
-    if (prevState.searchQuery !== this.state.searchQuery) {
+    if (
+      prevState.searchQuery !== this.state.searchQuery ||
+      prevState.page !== this.state.page
+    ) {
       this.setState({ images: response.data.hits });
-      console.log('Mount');
     }
   }
   handleFormSubmit = searchQuery => {
@@ -49,6 +52,12 @@ export default class App extends Component {
     });
   };
 
+  loadMore = () => {
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
+  };
+
   render() {
     return (
       <AppContainer>
@@ -61,6 +70,7 @@ export default class App extends Component {
             />
           ) : null}
         </div>
+        <LoadMoreButton onClick={this.loadMore} />
       </AppContainer>
     );
   }
