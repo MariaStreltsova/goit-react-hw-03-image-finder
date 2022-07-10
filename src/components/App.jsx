@@ -1,12 +1,16 @@
 import { Component } from 'react';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 import SearhBar from './searchBar/SearchBar';
 import ImageGallery from './image-gallery/ImageGallery';
 import LoadMoreButton from './button/Button';
 import { AppContainer } from './App.styled';
+import { Api } from '../components/service/ApiService';
+import Spiner from './loader/Loader';
 
 axios.defaults.baseURL = 'https://pixabay.com/api/';
 export default class App extends Component {
+  static propTypes = { searchQuery: PropTypes.string };
   state = {
     searchQuery: '',
     images: [],
@@ -16,15 +20,36 @@ export default class App extends Component {
     status: 'idle',
   };
 
-  async componentDidUpdate(prevProp, prevState) {
-    const response = await axios.get(
-      `?q=${this.state.searchQuery}&page=${this.state.page}&key=27511871-af3c65d931511896211490940&image_type=photo&orientation=horizontal&per_page=12`
-    );
+  async componentDidUpdate(_, prevState) {
     if (
       prevState.searchQuery !== this.state.searchQuery ||
       prevState.page !== this.state.page
     ) {
-      this.setState({ images: response.data.hits });
+      this.setState({ status: 'pending' });
+
+      try {
+        const images = await Api.getImg(
+          this.state.searchQuery,
+          this.state.page
+        );
+
+        if (!images.length) {
+          throw new Error();
+        }
+        this.setState(prevState => ({
+          images: [...prevState.images, ...images],
+          status: 'resolved',
+        }));
+        if (this.state.page > 1) {
+          window.scrollTo({
+            top: document.documentElement.scrollHeight,
+            behavior: 'smooth',
+          });
+        }
+      } catch (error) {
+        alert('error');
+        this.setState({ status: 'rejected' });
+      }
     }
   }
   handleFormSubmit = searchQuery => {
@@ -59,19 +84,46 @@ export default class App extends Component {
   };
 
   render() {
-    return (
-      <AppContainer>
-        <SearhBar onSubmit={this.handleFormSubmit} />
-        <div>
-          {this.state.images.length > 0 ? (
-            <ImageGallery
-              images={this.state.images}
-              // selectedImage={this.handleSelectedImage}
+    const { images, status } = this.state;
+    if (status === 'idle') {
+      return <SearhBar onSubmit={this.handleFormSubmit} />;
+    }
+    if (status === 'pending') {
+      return (
+        <AppContainer>
+          <SearhBar onSubmit={this.handleFormSubmit} />;
+          <Spiner />
+          {images.length > 0 && <LoadMoreButton onClick={this.loadMore} />}
+        </AppContainer>
+      );
+    }
+
+    if (status === 'resolved') {
+      return (
+        <AppContainer>
+          <SearhBar onSubmit={this.handleFormSubmit} />
+          <ImageGallery
+            images={this.state.images}
+            selectedImage={this.handleSelectedImage}
+          />
+          {/* {selectedImg && (
+            <Modal
+              selectedImg={selectedImg}
+              tags={alt}
+              onClose={this.closeModal}
             />
-          ) : null}
-        </div>
-        <LoadMoreButton onClick={this.loadMore} />
-      </AppContainer>
-    );
+          )} */}
+          {images.length > 0 && <LoadMoreButton onClick={this.loadMore} />}
+        </AppContainer>
+      );
+    }
+
+    if (status === 'rejected') {
+      return (
+        <AppContainer>
+          <SearhBar onSubmit={this.handleFormSubmit} />;
+        </AppContainer>
+      );
+    }
   }
 }
