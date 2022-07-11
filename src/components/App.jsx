@@ -22,17 +22,12 @@ export default class App extends Component {
   };
 
   async componentDidUpdate(_, prevState) {
-    if (
-      prevState.searchQuery !== this.state.searchQuery ||
-      prevState.page !== this.state.page
-    ) {
+    const { page, searchQuery } = this.state;
+    if (prevState.searchQuery !== searchQuery || prevState.page !== page) {
       this.setState({ status: 'pending' });
 
       try {
-        const images = await Api.getImg(
-          this.state.searchQuery,
-          this.state.page
-        );
+        const images = await Api.getImg(searchQuery, page);
 
         if (!images.length) {
           throw new Error();
@@ -41,7 +36,7 @@ export default class App extends Component {
           images: [...prevState.images, ...images],
           status: 'resolved',
         }));
-        if (this.state.page > 1) {
+        if (page > 1) {
           window.scrollTo({
             top: document.documentElement.scrollHeight,
             behavior: 'smooth',
