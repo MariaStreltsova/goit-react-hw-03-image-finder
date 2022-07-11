@@ -94,7 +94,7 @@ export default class App extends Component {
         <AppContainer>
           <SearhBar onSubmit={this.handleFormSubmit} />;
           <Spiner />
-          {images.length > 0 && <LoadMoreButton onClick={this.loadMore} />}
+          {/* {images.length > 0 && <LoadMoreButton onClick={this.loadMore} />} */}
         </AppContainer>
       );
     }
