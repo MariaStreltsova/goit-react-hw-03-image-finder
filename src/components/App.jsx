@@ -36,12 +36,6 @@ export default class App extends Component {
           images: [...prevState.images, ...images],
           status: 'resolved',
         }));
-        if (page > 1) {
-          window.scrollTo({
-            top: document.documentElement.scrollHeight,
-            behavior: 'smooth',
-          });
-        }
       } catch (error) {
         alert('error');
         this.setState({ status: 'rejected' });
@@ -77,6 +71,11 @@ export default class App extends Component {
     this.setState(prevState => ({
       page: prevState.page + 1,
     }));
+
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: 'smooth',
+    });
   };
 
   closeModal = () => {
