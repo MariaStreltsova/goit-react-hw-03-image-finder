@@ -1,11 +1,15 @@
 import { Component } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import { ToastContainer, toast } from 'react-toastify';
+import { Zoom } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import SearhBar from './searchBar/SearchBar';
 import ImageGallery from './image-gallery/ImageGallery';
 import LoadMoreButton from './button/Button';
 import { AppContainer } from './App.styled';
-import { Api } from '../components/service/ApiService';
+import fetchApi from '../components/service/ApiService';
 import Spiner from './loader/Loader';
 import Modal from './modal/Modal';
 
@@ -19,7 +23,9 @@ export default class App extends Component {
     selectedImage: null,
     alt: null,
     status: 'idle',
+    error: null,
   };
+  totalHits = null;
 
   async componentDidUpdate(_, prevState) {
     const { page, searchQuery } = this.state;
@@ -27,17 +33,21 @@ export default class App extends Component {
       this.setState({ status: 'pending' });
 
       try {
-        const images = await Api.getImg(searchQuery, page);
-
-        if (!images.length) {
-          throw new Error();
+        const imageData = await fetchApi(searchQuery, page);
+        this.totalHits = imageData.total;
+        const imagesHits = imageData.hits;
+        if (!imagesHits.length) {
+          toast.warning(
+            'No results were found for your search, please try something else.',
+            { transition: Zoom, position: 'top-center' }
+          );
         }
-        this.setState(prevState => ({
-          images: [...prevState.images, ...images],
+        this.setState(({ images }) => ({
+          images: [...images, ...imagesHits],
           status: 'resolved',
         }));
       } catch (error) {
-        alert('error');
+        toast.error(`Sorry something went wrong. ${error.message}`);
         this.setState({ status: 'rejected' });
       }
     }
@@ -73,7 +83,7 @@ export default class App extends Component {
     }));
 
     window.scrollTo({
-      top: document.documentElement.scrollHeight,
+      top: document.documentElement.scrollHeight - 90,
       behavior: 'smooth',
     });
   };
@@ -85,46 +95,78 @@ export default class App extends Component {
   };
 
   render() {
-    const { images, status, selectedImage, alt } = this.state;
-    if (status === 'idle') {
-      return <SearhBar onSubmit={this.handleFormSubmit} />;
-    }
-    if (status === 'pending') {
-      return (
-        <AppContainer>
-          <SearhBar onSubmit={this.handleFormSubmit} />;
-          <Spiner />
-          {/* {images.length > 0 && <LoadMoreButton onClick={this.loadMore} />} */}
-        </AppContainer>
-      );
-    }
-
-    if (status === 'resolved') {
-      return (
-        <AppContainer>
-          <SearhBar onSubmit={this.handleFormSubmit} />
+    const { images, status, selectedImage, alt, error } = this.state;
+    return (
+      <AppContainer>
+        <SearhBar onSubmit={this.handleFormSubmit} />
+        <ToastContainer autoClose={3000} theme="colored" pauseOnHover />
+        {status === 'pending' && <Spiner />}
+        {error && (
+          <h1 style={{ color: 'orangered', textAlign: 'center' }}>
+            {error.message}
+          </h1>
+        )}
+        {images.length > 0 && (
           <ImageGallery
-            images={this.state.images}
+            images={images}
             selectedImage={this.handleSelectedImage}
           />
-          {selectedImage && (
-            <Modal
-              selectedImage={selectedImage}
-              tags={alt}
-              onClose={this.closeModal}
-            />
-          )}
-          {images.length > 0 && <LoadMoreButton onClick={this.loadMore} />}
-        </AppContainer>
-      );
-    }
-
-    if (status === 'rejected') {
-      return (
-        <AppContainer>
-          <SearhBar onSubmit={this.handleFormSubmit} />;
-        </AppContainer>
-      );
-    }
+        )}
+        {images.length > 0 && images.length !== this.totalHits && (
+          <LoadMoreButton onClick={this.loadMore} />
+        )}
+        {selectedImage && (
+          <Modal
+            selectedImage={selectedImage}
+            tags={alt}
+            onClose={this.closeModal}
+          />
+        )}
+      </AppContainer>
+    );
   }
 }
+
+//     if (status === 'idle') {
+//       return <SearhBar onSubmit={this.handleFormSubmit} />;
+//     }
+//     if (status === 'pending') {
+//       return (
+//         <AppContainer>
+//           <SearhBar onSubmit={this.handleFormSubmit} />;
+//           <Spiner />
+//           {/* {images.length > 0 && <LoadMoreButton onClick={this.loadMore} />} */}
+//         </AppContainer>
+//       );
+//     }
+
+//     if (status === 'resolved') {
+//       return (
+//         <AppContainer>
+//           <SearhBar onSubmit={this.handleFormSubmit} />
+//           <ToastContainer />
+//           <ImageGallery
+//             images={this.state.images}
+//             selectedImage={this.handleSelectedImage}
+//           />
+//           {selectedImage && (
+//             <Modal
+//               selectedImage={selectedImage}
+//               tags={alt}
+//               onClose={this.closeModal}
+//             />
+//           )}
+//           {images.length > 0 && <LoadMoreButton onClick={this.loadMore} />}
+//         </AppContainer>
+//       );
+//     }
+
+//     if (status === 'rejected') {
+//       return (
+//         <AppContainer>
+//           <SearhBar onSubmit={this.handleFormSubmit} />;
+//         </AppContainer>
+//       );
+//     }
+//   }
+// }

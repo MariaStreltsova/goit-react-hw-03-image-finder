@@ -1,4 +1,7 @@
 import { Component } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import PropTypes from 'prop-types';
 import {
   SearchBar,
@@ -18,7 +21,7 @@ export default class SearhBar extends Component {
   handleSubmit = evt => {
     evt.preventDefault();
     if (this.state.searchQuery.trim() === '') {
-      alert('введите поиск');
+      toast.error('Please enter something');
       return;
     }
     this.props.onSubmit(this.state.searchQuery);
