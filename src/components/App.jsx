@@ -46,6 +46,14 @@ export default class App extends Component {
           images: [...images, ...imagesHits],
           status: 'resolved',
         }));
+
+        if (prevState.images.length !== imagesHits.length && page > 1) {
+          const CARD_HEIGHT = 300; // preview image height
+          window.scrollBy({
+            top: CARD_HEIGHT * 2,
+            behavior: 'smooth',
+          });
+        }
       } catch (error) {
         toast.error(`Sorry something went wrong. ${error.message}`);
         this.setState({ status: 'rejected' });
@@ -81,11 +89,6 @@ export default class App extends Component {
     this.setState(prevState => ({
       page: prevState.page + 1,
     }));
-
-    window.scrollTo({
-      top: document.documentElement.scrollHeight - 90,
-      behavior: 'smooth',
-    });
   };
 
   closeModal = () => {
