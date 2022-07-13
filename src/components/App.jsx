@@ -47,7 +47,7 @@ export default class App extends Component {
           status: 'resolved',
         }));
 
-        if (prevState.images.length !== imagesHits.length && page > 1) {
+        if (page > 1) {
           const CARD_HEIGHT = 300; // preview image height
           window.scrollBy({
             top: CARD_HEIGHT * 2,
